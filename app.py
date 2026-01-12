@@ -1,27 +1,32 @@
+# ===============================
+# 1. IMPORTS (TOP OF FILE)
+# ===============================
 import streamlit as st
 import os
-import sys
+import json
+from datetime import datetime
 
+from integrity.integrity_manager import IntegrityManager
+from ml.forensic_analyzer import ForensicAnalyzer
+# ===============================
+# 2. CLOUD-SAFE DIRECTORIES
+# ===============================
 # Ensure required directories exist (Cloud-safe)
 os.makedirs("integrity", exist_ok=True)
 os.makedirs("data", exist_ok=True)
 
-
-# Paths
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(BASE_DIR, "integrity"))
-sys.path.insert(0, os.path.join(BASE_DIR, "ml"))
-
-from integrity_manager import IntegrityManager
-from forensic_analyzer import ForensicAnalyzer
-
+# ===============================
+# 3. PAGE CONFIG (BEFORE UI)
+# ===============================
 # Page config
 st.set_page_config(
-    page_title="AI Forensic Evidence System",
+    page_title="HackSecureX – AI Forensic Cybersecurity System",
     page_icon="🛡️",
     layout="wide"
 )
-
+# ===============================
+# 4. SIDEBAR (STATE FIRST)
+# ===============================
 # Sidebar
 st.sidebar.header("🔧 Control Panel")
 demo_mode = st.sidebar.toggle("🎭 Demo Mode", value=True)
@@ -30,37 +35,23 @@ uploaded_file = st.sidebar.file_uploader(
     "Upload Log Evidence",
     type=["txt", "log"]
 )
-
-
-# Title
-st.title("🛡️ HackSecureX – AI Forensic Cybersecurity System")
-st.markdown(
-    """
-    **HackSecureX International Hackathon 2026**  
-    *AI-driven cyber forensics with legally defensible evidence handling*
-    """
-)
-
-if demo_mode:
-    st.info("🎭 Demo Mode is ON — clean forensic session")
-else:
-    st.warning("🔍 Forensic Mode is ON — custody history preserved")
-st.divider()
 #
 lock_btn = st.sidebar.button("🔒 Lock Evidence")
 analyze_btn = st.sidebar.button("🤖 Run AI Analysis")
 verify_btn = st.sidebar.button("🔍 Verify Integrity")
 view_custody_btn = st.sidebar.button("📜 View Chain of Custody")
 download_report_btn = st.sidebar.button("📄 Download Forensic Report")
-# if view_custody_btn:
-#     integrity = IntegrityManager()
-#     with open(integrity.custody_file, "r") as f:
-#         custody_log = f.read()
-#     st.subheader("📜 Chain of Custody Log")
-#     st.code(custody_log, language="json")
 
+# ===============================
+# 5. INITIALIZE MANAGERS
+# ===============================
 # Initialize managers
 integrity = IntegrityManager()
+analyzer = ForensicAnalyzer()
+
+# ===============================
+# 6. DEMO MODE RESET (RUN ONCE)
+# ===============================
 # Demo Mode: reset chain of custody for clean runs
 if demo_mode and "demo_reset_done" not in st.session_state:
     custody_file = os.path.join("integrity", "chain_of_custody.json")
@@ -68,13 +59,35 @@ if demo_mode and "demo_reset_done" not in st.session_state:
         os.remove(custody_file)
     st.session_state.demo_reset_done = True
 
+# ===============================
+# 7. TITLE + MODE INDICATOR
+# ===============================
+# Title
+st.title("🛡️ HackSecureX – AI Forensic Cybersecurity System")
+if demo_mode:
+    st.info("🎭 Demo Mode is ON — clean forensic session")
+else:
+    st.warning("🔍 Forensic Mode is ON — custody history preserved")
+st.markdown(
+    """
+    <h3 style="margin-bottom: 0;">
+        HackSecureX International Hackathon 2026
+    </h3>
+    <p style="font-size: 18px; margin-top: 4px;">
+        <em>AI-driven cyber forensics with legally defensible evidence handling</em>
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
-analyzer = ForensicAnalyzer()
+st.divider()
 
+# ===============================
+# 8. FILE UPLOAD HANDLING
+# ===============================
 # Session state
 if "file_path" not in st.session_state:
     st.session_state.file_path = None
-
 if uploaded_file:
     save_path = os.path.join("data", uploaded_file.name)
     with open(save_path, "wb") as f:
@@ -83,12 +96,18 @@ if uploaded_file:
     st.success("📁 Evidence file uploaded successfully.")
 
 # Lock evidence
+# ===============================
+# 9. LOCK EVIDENCE
+# ===============================
 if lock_btn and st.session_state.file_path:
     file_hash = integrity.lock_evidence(st.session_state.file_path)
     st.success("🔒 Evidence locked successfully.")
     st.code(file_hash, language="text")
 
 # AI analysis
+# ===============================
+# 10. AI FORENSIC ANALYSIS
+# ===============================
 if analyze_btn and st.session_state.file_path:
     st.info("🤖 Running AI forensic analysis...")
     df = analyzer.parse_logs(st.session_state.file_path)
@@ -113,6 +132,9 @@ if analyze_btn and st.session_state.file_path:
     )
 
 # Verify integrity
+# ===============================
+# 11. VERIFY INTEGRITY
+# ===============================
 if verify_btn and st.session_state.file_path:
     status, message = integrity.verify_integrity(st.session_state.file_path)
     if status:
@@ -125,7 +147,7 @@ st.divider()
 import json
 
 # ------------------------------
-# Chain of Custody Viewer
+# 12. Chain of Custody Viewer
 # ------------------------------
 if view_custody_btn:
     custody_file = os.path.join("integrity", "chain_of_custody.json")
@@ -146,8 +168,9 @@ if view_custody_btn:
     else:
         st.warning("Chain of custody file not found.")
 
-#
-from datetime import datetime
+# ===============================
+# 13. DOWNLOAD FORENSIC REPORT
+# ===============================
 
 # Download Forensic Report
 if download_report_btn and st.session_state.file_path:
