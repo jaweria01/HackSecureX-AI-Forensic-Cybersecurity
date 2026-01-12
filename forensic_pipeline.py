@@ -6,9 +6,9 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(BASE_DIR, "integrity"))
 sys.path.insert(0, os.path.join(BASE_DIR, "ml"))
 
-from integrity_manager import IntegrityManager
-from forensic_analyzer import ForensicAnalyzer
 
+from integrity.integrity_manager import IntegrityManager
+from ml.forensic_analyzer import ForensicAnalyzer
 
 class ForensicPipeline:
     def __init__(self):
