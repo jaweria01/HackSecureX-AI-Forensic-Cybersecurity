@@ -74,7 +74,7 @@ st.markdown(
         Nexora Hacks 2026 Hackathon
     </h3>
     <p style="font-size: 18px; margin-top: 4px;">
-        <em>AI-driven cyber forensics with legally defensible evidence handling</em>
+        <em>AI-driven cyber forensics with legally defensible evidence handling</em><br>
         <em>AI-powered digital forensics with evidence integrity and chain-of-custody</em>
     </p>
     """,
