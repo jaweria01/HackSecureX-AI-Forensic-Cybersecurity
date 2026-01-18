@@ -20,7 +20,7 @@ os.makedirs("data", exist_ok=True)
 # ===============================
 # Page config
 st.set_page_config(
-    page_title="HackSecureX – AI Forensic Cybersecurity System",
+    page_title="CyberTrust – AI Forensic Cybersecurity System",
     page_icon="🛡️",
     layout="wide"
 )
@@ -63,7 +63,7 @@ if demo_mode and "demo_reset_done" not in st.session_state:
 # 7. TITLE + MODE INDICATOR
 # ===============================
 # Title
-st.title("🛡️ HackSecureX – AI Forensic Cybersecurity System")
+st.title("🛡️ CyberTrust – AI Forensic Cybersecurity System")
 if demo_mode:
     st.info("🎭 Demo Mode is ON — clean forensic session")
 else:
@@ -71,10 +71,11 @@ else:
 st.markdown(
     """
     <h3 style="margin-bottom: 0;">
-        HackSecureX International Hackathon 2026
+        Nexora Hacks 2026 Hackathon
     </h3>
     <p style="font-size: 18px; margin-top: 4px;">
         <em>AI-driven cyber forensics with legally defensible evidence handling</em>
+        <em>AI-powered digital forensics with evidence integrity and chain-of-custody</em>
     </p>
     """,
     unsafe_allow_html=True
